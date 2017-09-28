@@ -10,19 +10,73 @@ In Additonal it also gives us the heading error(angle) and the speed
 
 Goal of the implementation is to calculate the correct steering value.
 
+To do this I implemented 3 functions in PID class:
+
+* Init
+Set Initial PID scalars / weights
+
+* UpdateError 
+Update proportional, differential and integral errors
+
+  * The Proportional error is the new CTE
+  * The integral errors is the sum of all the CTE 
+  * The differential error is the difference between current and previous CTE
+
+
+* Total error
+
+Total error is calculated using below formula which multiplying PID scalars /weights with corresponding component/term
+    ```
+    Total error = Kp * p_error + Ki * i_error + Kd * d_error
+    ```
+
 ### Components or terms
 
   * P term (proportional) :
+  The proportional term drives the error to zero, however, these results in error oscillating about the set point.
 
-  * I term (Integral) :
+  * I term (Integral) :The integral term, pushes the control in the opposite direction of the accumulated error, which can pull right or left.
 
-  * D term (derivative) :
+  * D term (derivative) :The integral term, pushes the control in the opposite direction of the accumulated error, which can pull right or left.
 
 
 ### PID Tuning:
 Parmeters are tuned manually or Visually and kept constant throttel
 
-Parameters are tunned in following way:
+I fixed throttle at 0.3
+
+And final scale values are:
+
+***Pid_VarKp = -0.09, 	
+Pid_VarKi = -0.0009, 
+Pid_VarKd = -4.0***
+
+* First step: 	
+```
+K_P = -1.0, since the steering is between -1 to 1 
+K_I = 0
+K_D = -1, negative value to minimize the amount of change 
+```
+
+Observed to much oscillation and car travels to out of track to the right immediately,
+So I to reduces K_P and K_D vales 
+
+* Second step and later:	
+```
+K_P = -0.5, 
+K_I = 0
+K_D = -2, 
+```
+
+Observed improvement and car passed successfully first curve and goes out of the track, and then I continued to decreasing K_P to reduce the oscillation and K_D helped to pullback the car on to the center
+In addition, I observed car drifting to the right so added small value to K_I, which helped center the car.
+
+## Improvements required:
+*	Since K_D was set too high, in curves can observe quick and extreme steering changes
+*	Car drives close to the edge near last right turn of the lap 
+*	Managing throttle and speed
+*	Using Twiddle algorithm
+
 
 ## Dependencies
 
