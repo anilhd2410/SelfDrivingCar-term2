@@ -37,7 +37,7 @@ Total error is calculated using below formula which multiplying PID scalars /wei
 
   * I term (Integral) :The integral term, pushes the control in the opposite direction of the accumulated error, which can pull right or left.
 
-  * D term (derivative) :The integral term, pushes the control in the opposite direction of the accumulated error, which can pull right or left.
+  * D term (derivative) :The derivative term, the differential from previous to current error, to handle overshoot around the centerline
 
 
 ### PID Tuning:
