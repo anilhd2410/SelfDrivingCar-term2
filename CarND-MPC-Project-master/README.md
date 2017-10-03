@@ -2,7 +2,94 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
+This project implements Model Predictive Control (MPC) to the drive the car around the track in simulation.
 
+## The Model:
+Kinematic model implemented in this solution. Kinematic models are simplifications of dynamic models that ignore tire forces, gravity, and mass.
+
+The vehicle state vector has the following 6 variables:
+
+* x: position of the vehicle in the x axis 
+* y: position of the vehicle in the y axis
+* psi: yaw angle
+* v: speed
+* cte: cross track error, the error between the center of the road and the vehicle's position
+* epsi: Orientation error
+
+The actuators of the vehicle are:
+* delta: steer angle
+* a: acceleration
+
+Update equations for the model:
+* State update Forula:
+``` 
+    xt+1=xt+vt∗cos(ψt)∗dt
+    yt+1=yt+vt∗sin(ψt)∗dt
+    ψt+1=ψt+Lfvt∗δt∗dt
+    vt+1=vt+at∗dt
+```
+
+[x,y,ψ,v] is the state of the vehicle, Lf which measures the distance between the front of the vehicle and its center of gravity, and [δ,a] are the actuators(as mentioned above steer angle and acceleration)
+
+*	Errors update Formula:
+``` 
+ ctet+1=f(xt)−yt+(vt∗sin(eψt)∗dt)
+ eψt+1=ψt−ψdest+(Lfvt∗δt∗dt)
+```
+ 
+## Timestep length and duration:
+Timestep length ‘N’ is the timesteps in the horizon
+Duration ‘dt’ is how much time elapses between actuations.
+
+Final parameters are:
+
+**N = 10 
+Dt = 0.1
+So T = 1 Sec**
+
+Initial values are suggestion in Q&A it was working fine since cost constrains are perfect for these values. In addition, Dt is matching to the time delay 100ms.
+
+Next increased N value to 20 and found out that horizon is too long and it is longer to compute. In addition, tested with value 15 and CTE error is not very close to zero.
+
+Therefore, the Value 10 and 0.1 is the best values I found out with cost constrains applied.
+
+Displaying the MPC trajectory path in green, and the polynomial fitted reference path in yellow.
+The mpc_x and mpc_y variables display a line projection in green. The next_x and next_y variables display a line projection in yellow. You can display these both at the same time, as seen in the image above.
+
+## Polynomial Fitting and MPC PreProcessing:
+First shifted car reference angle to 90 degrees and In order to help the polynomial fit and to reduce more transformation calculation later the waypoints are transformed to the vehicle coordinates. Therefore, the line will be horizontal same orientation as the car. 
+
+```
+   int i = 0;
+   for( ; i < ptsx.size(); ++i)
+   {
+     double x_shift = ptsx[i] - px; // x coordinate is zero
+     double y_shift = ptsy[i] - py; // y coordinate is zero
+     ptsx[i] = (x_shift * cos(0 - psi) - y_shift * sin(0 - psi));
+     ptsy[i] = (x_shift * sin(0 - psi) + y_shift * cos(0 - psi));
+   }
+```
+
+Third degree polynomial fit is uses to connect the waypoints
+
+```
+    auto coeffs = polyfit(ptsx_transform, ptsy_transform, 3);
+```
+
+## Model Predictive Control with Latency:
+
+The state variables are calculated based on the delay (0.1s) in order handle the 100ms latency 
+
+```
+    double predict_px = v * dt; 
+    double predict_py = 0.0; 
+    double predict_psi = v * -steer_value  / Lf * dt;
+    double predict_v = v + throttle_value * dt;
+    double predict_cte = cte + v * sin(epsi) * dt;
+    double predpredict_epsi = epsi + predict_psi;
+```
+
+---
 ## Dependencies
 
 * cmake >= 3.5
