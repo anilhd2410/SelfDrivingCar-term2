@@ -59,7 +59,7 @@ K_D = -1, negative value to minimize the amount of change
 ```
 
 Observed too much oscillation and car travels to out of track to the right immediately,
-So I reduces K_P and K_D vales 
+So I reduces K_P and K_D values 
 
 * Second step and later:	
 ```
