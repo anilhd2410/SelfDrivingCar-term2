@@ -54,7 +54,7 @@ Next increased N value to 20 and found out that horizon is too long and it is lo
 Therefore, the Value 10 and 0.1 is the best values I found out with cost constrains applied.
 
 Displaying the MPC trajectory path in green, and the polynomial fitted reference path in yellow.
-The mpc_x and mpc_y variables display a line projection in green. The next_x and next_y variables display a line projection in yellow. You can display these both at the same time, as seen in the image above.
+The mpc_x and mpc_y variables display a line projection in green. The next_x and next_y variables display a line projection in yellow.
 
 ## Polynomial Fitting and MPC PreProcessing:
 First shifted car reference angle to 90 degrees and In order to help the polynomial fit and to reduce more transformation calculation later the waypoints are transformed to the vehicle coordinates. Therefore, the line will be horizontal same orientation as the car. 
