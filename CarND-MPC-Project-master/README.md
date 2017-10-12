@@ -21,7 +21,7 @@ The actuators of the vehicle are:
 * a: acceleration
 
 Update equations for the model:
-* State update Forula:
+* State update Formula:
 ``` 
     xt+1=xt+vt∗cos(ψt)∗dt
     yt+1=yt+vt∗sin(ψt)∗dt
